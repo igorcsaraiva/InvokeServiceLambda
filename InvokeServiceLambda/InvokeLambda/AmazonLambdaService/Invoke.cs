@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace InvokeLambda.AmazonLambdaService
 {
-    class Invoke : IInvoke
+    public class Invoke : IInvoke
     {
         private readonly IAmazonLambda _amazonLambda;
 

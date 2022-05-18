@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace InvokeLambda.AmazonLambdaService
 {
-    class Security : ISecurity
+    public class Security : ISecurity
     {
         private readonly IAmazonSecurityTokenService amazonSecurityTokenService;
         public Security()
