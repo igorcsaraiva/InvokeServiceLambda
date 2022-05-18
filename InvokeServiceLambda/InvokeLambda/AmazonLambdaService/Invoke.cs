@@ -1,5 +1,7 @@
-﻿using Amazon.Lambda;
+﻿using Amazon;
+using Amazon.Lambda;
 using Amazon.Lambda.Model;
+using Amazon.SecurityToken.Model;
 using InvokeLambda.Domain;
 using InvokeLambda.Interfaces;
 using System.IO;
@@ -13,31 +15,19 @@ namespace InvokeLambda.AmazonLambdaService
     {
         private readonly IAmazonLambda _amazonLambda;
 
-        public Invoke()
+        public Invoke(RegionEndpoint regionEndpoint)
         {
-            _amazonLambda = new AmazonLambdaClient();
+            _amazonLambda = new AmazonLambdaClient(regionEndpoint);
+        }
+        public Invoke(Credentials credentials, RegionEndpoint regionEndpoint)
+        {
+            _amazonLambda = new AmazonLambdaClient(credentials, regionEndpoint);
         }
 
         /// <summary>
         /// Invokes a Lambda function.
         /// </summary>
-        /// <param name="functionName">Name of the function to be invoked.</param>
-        /// <param name="invocationType">
-        ///  Gets and sets the property InvocationType.
-        ///     Choose from the following options.
-        ///     RequestResponse
-        ///     (default) - Invoke the function synchronously. Keep the connection open until
-        ///     the function returns a response or times out. The API response includes the function
-        ///     response and additional data.
-        ///     Event
-        ///     - Invoke the function asynchronously. Send events that fail multiple times to
-        ///     the function's dead-letter queue (if it's configured). The API response only
-        ///     includes a status code.
-        ///     DryRun
-        ///     - Validate parameter values and verify that the user or role has permission to
-        ///     invoke the function.   
-        /// </param>
-        /// <param name="payload">JSON that you want to provide to your cloud function as input.</param>
+        /// <param name="request">Container for the parameters to the Invoke operation. Invokes a Lambda function.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>The response from the Invoke service method, as returned by Lambda.</returns>
         /// <exception cref="EC2AccessDeniedException">Need additional permissions to configure VPC settings.</exception>
@@ -65,23 +55,11 @@ namespace InvokeLambda.AmazonLambdaService
         /// <exception cref="SubnetIPAddressLimitReachedException">Lambda was not able to set up VPC access for the Lambda function because one or more configured subnets has no available IP addresses.</exception>
         /// <exception cref="TooManyRequestsException">The request throughput limit was exceeded.</exception>
         /// <exception cref="UnsupportedMediaTypeException">The content type of the Invoke request body is not JSON.</exception>
-        public async Task<T> InvokeLambdaAsync<T>(string functionName, string payload, string invocationType = "RequestResponse", CancellationToken cancellationToken = default) where T : Response, new()
+        public async Task<T> InvokeLambdaAsync<T, K>(K request, CancellationToken cancellationToken = default) where T : Response, new() where K : Request, new()
         {
-            var requestBody = CreatedRequest(functionName, payload, invocationType);
-
-            var responseBody = await _amazonLambda.InvokeAsync(requestBody, cancellationToken);
+            var responseBody = await _amazonLambda.InvokeAsync(new InvokeRequest { FunctionName = request.FunctionName , Payload = request.Payload, InvocationType = request.InvocationType}, cancellationToken);
 
             return new T { Payload = ConvertMemoryStreamToString(responseBody.Payload), StatusCode = responseBody.StatusCode };
-        }
-
-        private InvokeRequest CreatedRequest(string functionName, string payload, string invocationType)
-        {
-            return new InvokeRequest
-            {
-                FunctionName = functionName,
-                InvocationType = invocationType,
-                Payload = payload
-            };
         }
 
         private string ConvertMemoryStreamToString(MemoryStream memoryStream)

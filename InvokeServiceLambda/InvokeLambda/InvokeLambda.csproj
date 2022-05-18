@@ -1,11 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Authors>Igor Saraiva Correa</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/igorcsaraiva/InvokeServiceLambda</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/igorcsaraiva/InvokeServiceLambda</PackageProjectUrl>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AWSSDK.Lambda" Version="3.7.13" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AWSSDK.Lambda" Version="3.7.13" />
+		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.151" />
+	</ItemGroup>
 
 </Project>
