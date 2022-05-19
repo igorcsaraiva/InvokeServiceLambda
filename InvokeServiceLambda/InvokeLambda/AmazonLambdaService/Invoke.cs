@@ -4,6 +4,7 @@ using Amazon.Lambda.Model;
 using Amazon.SecurityToken.Model;
 using InvokeLambda.Domain;
 using InvokeLambda.Interfaces;
+using Newtonsoft.Json;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -55,11 +56,11 @@ namespace InvokeLambda.AmazonLambdaService
         /// <exception cref="SubnetIPAddressLimitReachedException">Lambda was not able to set up VPC access for the Lambda function because one or more configured subnets has no available IP addresses.</exception>
         /// <exception cref="TooManyRequestsException">The request throughput limit was exceeded.</exception>
         /// <exception cref="UnsupportedMediaTypeException">The content type of the Invoke request body is not JSON.</exception>
-        public async Task<T> InvokeLambdaAsync<T, K>(K request, CancellationToken cancellationToken = default) where T : Response, new() where K : Request, new()
+        public async Task<T> InvokeLambdaAsync<T, K>(Request<K> request, CancellationToken cancellationToken = default)
         {
             var responseBody = await _amazonLambda.InvokeAsync(new InvokeRequest { FunctionName = request.FunctionName , Payload = request.Payload, InvocationType = request.InvocationType}, cancellationToken);
 
-            return new T { Payload = ConvertMemoryStreamToString(responseBody.Payload), StatusCode = responseBody.StatusCode };
+            return JsonConvert.DeserializeObject<T>(ConvertMemoryStreamToString(responseBody.Payload));
         }
 
         private string ConvertMemoryStreamToString(MemoryStream memoryStream)

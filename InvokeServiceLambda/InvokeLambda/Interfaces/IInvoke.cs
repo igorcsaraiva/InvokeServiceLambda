@@ -38,6 +38,6 @@ namespace InvokeLambda.Interfaces
         /// <exception cref="SubnetIPAddressLimitReachedException">Lambda was not able to set up VPC access for the Lambda function because one or more configured subnets has no available IP addresses.</exception>
         /// <exception cref="TooManyRequestsException">The request throughput limit was exceeded.</exception>
         /// <exception cref="UnsupportedMediaTypeException">The content type of the Invoke request body is not JSON.</exception>
-        Task<T> InvokeLambdaAsync<T, K>(K request, CancellationToken cancellationToken = default) where T : Response, new() where K : Request, new();
+        Task<T> InvokeLambdaAsync<T, K>(Request<K> request, CancellationToken cancellationToken = default);
     }
 }

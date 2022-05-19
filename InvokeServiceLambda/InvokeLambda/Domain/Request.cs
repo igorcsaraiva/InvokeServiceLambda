@@ -1,14 +1,20 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace InvokeLambda.Domain
 {
-    public abstract class Request
+    public class Request<T>
     {
+ 
         /// <summary>
-        /// Gets and sets the property Payload.
-        /// JSON that you want to provide to your cloud function as input.
+        /// Sets the property Payload.
+        /// Class that you want to provide to your cloud function as input.
         /// </summary>
-        public string Payload { get; set; }
+        public T PayloadClass { private get; set; }
+        /// <summary>
+        /// Get Payload property in json format.
+        /// </summary>
+        public string Payload => ClassToJson(PayloadClass);
         /// <summary>
         /// Gets and sets the property name of the function to be invoked.
         /// </summary>
@@ -30,5 +36,10 @@ namespace InvokeLambda.Domain
         /// </summary>
         [DefaultValue("RequestResponse")]
         public string InvocationType { get; set; }
+
+        private string ClassToJson(T obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
     }
 }

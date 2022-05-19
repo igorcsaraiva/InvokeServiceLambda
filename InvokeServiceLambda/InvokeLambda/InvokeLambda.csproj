@@ -7,12 +7,13 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<RepositoryUrl>https://github.com/igorcsaraiva/InvokeServiceLambda</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/igorcsaraiva/InvokeServiceLambda</PackageProjectUrl>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AWSSDK.Lambda" Version="3.7.13" />
 		<PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.151" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 </Project>
